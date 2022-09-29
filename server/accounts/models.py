@@ -1,9 +1,13 @@
-from django.db import models
+import sys
+from PIL import Image
+from io import BytesIO
 
+from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from .managers import UserManager
 
@@ -21,6 +25,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def set_avatar(self, file: InMemoryUploadedFile) -> None:
+        original_image = Image.open(file)
+        image = original_image.convert('RGB')
+        filestream = BytesIO()
+        file_ = image.save(filestream, 'JPEG', quality=99)
+        self.avatar = InMemoryUploadedFile(
+            filestream, 'ImageField', file.name, 'jpeg/image', sys.getsizeof(filestream), None
+        )
+        self.save()
 
 
 class LastVerificationCode(models.Model):

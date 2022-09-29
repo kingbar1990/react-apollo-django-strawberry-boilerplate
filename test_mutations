@@ -112,6 +112,13 @@ mutation SetAvatar{
 }
 
 
+SET AVATAR VIA POSTMAN
+
+operations   {"query":"mutation ($file: Upload!) { setAvatar(file: $file)
+            {...on SuccessType{message}...on ErrorType{message}}}", "variables": {}}
+map   {"0": ["variables.file"]}
+0   file
+
 SEND TOKEN IN HEADERS
 
 {

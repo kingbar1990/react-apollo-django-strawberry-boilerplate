@@ -9,6 +9,7 @@ from strawberry_django_jwt.shortcuts import (
 )
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from server.tasks import send_verification_code
 from .types import (
@@ -136,6 +137,6 @@ class SetAvatarMutation:
         if not file:
             return ErrorType(message='Not file')
         user = info.context.request.user
-        user.avatar = file
-        user.save()
+        # user.avatar = file
+        user.set_avatar(file)
         return SuccessType(message='Avatar set successful')

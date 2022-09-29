@@ -1,0 +1,121 @@
+
+
+REGISTER MUTATION
+
+mutation register{
+  register(email:"test@gmail.com",password1:"qweqweqwe",
+    password2:"qweqweqwe",name:"TestUser")
+  {
+  ... on RegisterSuccessType{
+    user{
+      id
+      email
+    }
+    token
+  }
+  ... on ErrorType{
+    message
+  }
+}
+}
+
+
+LOGIN MUTATION
+
+mutation{
+  login(email:"test@gmail.com", password:"qweqweqwe")
+  {
+  ... on LoginSuccessType{
+    user{
+      id
+      email
+    }
+    token
+  }
+}
+}
+
+
+VERIFYTOKEN MUTATIONS
+
+mutation verifyToken{
+  verifyToken(token: "token") {
+    ...on PayloadType{
+      payload{
+        exp
+        origIat
+        email
+      }
+    }
+  }
+}
+
+
+ABOUT ME MUTATION
+
+query me{
+  me{
+    ...on MeType{
+      user{
+        email
+      }
+    }
+    ...on ErrorType{
+      message
+    }
+  }
+}
+
+
+SEND CODE TO EMAIL
+
+mutation sendForgotPassword{
+  sendForgotPassword(email:"test@gmail.com")
+  {
+    ...on SuccessType{
+      message
+    }
+    ...on ErrorType{
+      message
+    }
+  }
+ }
+
+
+CHECK CODE MUTATION
+
+mutation VerifyForgotPassword{
+  verifyForgotPassword(email:"zarj09@gmail.com", code:"0930")
+  {
+    ...on VerifyForgotPasswordSuccessType{
+      token
+    }
+    ...on ErrorType{
+      message
+    }
+  }
+ }
+
+
+SET AVATAR MUTATION
+
+mutation SetAvatar{
+  setAvatar(file:"file:///home/user/Desktop/test/Screenshot_from_2022-09-28_18-51-04.png")
+  {
+    ...on SuccessType{
+      message
+    }
+    ...on ErrorType{
+      message
+    }
+  }
+}
+
+
+SEND TOKEN IN HEADERS
+
+{
+    "Authorization": "JWT token"
+}
+
+

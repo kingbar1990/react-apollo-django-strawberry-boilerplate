@@ -35,3 +35,4 @@ celerybeat-schedule
 .pem
 .idea/
 .eslintrc
+.pytest_cache/

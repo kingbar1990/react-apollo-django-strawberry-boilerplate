@@ -32,8 +32,12 @@ mutation{
     }
     token
   }
+  ... on ErrorType{
+    message
+  }
 }
 }
+
 
 
 VERIFYTOKEN MUTATIONS
@@ -126,3 +130,14 @@ SEND TOKEN IN HEADERS
 }
 
 
+mutation ChangePassword{
+  changePassword(password1:"qweqweqwe", password2:"qweqweqwe")
+  {
+    ...on SuccessTypeType{
+      message
+    }
+    ...on ErrorType{
+      message
+    }
+  }
+ }

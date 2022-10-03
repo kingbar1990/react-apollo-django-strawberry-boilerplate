@@ -8,10 +8,8 @@ from accounts.mutations import (
     RegisterMutation,
     SendForgotPasswordMutation,
     VerifyForgotPasswordMutation,
-    SetAvatarMutation
+    SetAvatarMutation, ChangePasswordMutation
 )
-
-# from .middleware import AuthorizationMiddleware
 
 
 @strawberry.type
@@ -22,7 +20,7 @@ class Query(AccountQuery):
 @strawberry.type
 class Mutation(LoginMutation, RegisterMutation,
                SendForgotPasswordMutation, VerifyForgotPasswordMutation,
-               SetAvatarMutation):
+               SetAvatarMutation, ChangePasswordMutation):
     token_auth = jwt_mutations.ObtainJSONWebToken.obtain
     verify_token = jwt_mutations.Verify.verify
     refresh_token = jwt_mutations.Refresh.refresh

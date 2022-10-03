@@ -9,7 +9,6 @@ from strawberry_django_jwt.shortcuts import (
 )
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from server.tasks import send_verification_code
 from .types import (
@@ -47,8 +46,8 @@ class LoginMutation:
             return ErrorType(message='User with specified email does not exists or password in incorrect.')
 
         token = get_token(user)
-        print(token, flush=True)
-        print(get_user_by_token(token), flush=True)
+        # print(token, flush=True)
+        # print(get_user_by_token(token), flush=True)
         return LoginSuccessType(user=user, token=token)
 
 
@@ -64,6 +63,9 @@ class RegisterMutation:
 
         if User.objects.filter(email=email).exists():
             return ErrorType(message="User with specified email already exists.")
+
+        if len(password_1) < 3:
+            return ErrorType(message="Password must be more than 3 characters.")
 
         user = User.objects.create(email=email)
         user.full_name = name
@@ -81,7 +83,7 @@ class ChangePasswordMutation:
         if password_1 == password_2:
             user.set_password(password_1)
             user.save()
-            return SuccessType(message='Ok')
+            return SuccessType(message='Password changed success')
         else:
             return ErrorType(message="Passwords didn't match.")
 
@@ -137,6 +139,7 @@ class SetAvatarMutation:
         if not file:
             return ErrorType(message='Not file')
         user = info.context.request.user
-        # user.avatar = file
-        user.set_avatar(file)
+        user.avatar = file
+        user.save()
+        # user.set_avatar(file)
         return SuccessType(message='Avatar set successful')

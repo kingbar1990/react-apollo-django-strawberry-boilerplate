@@ -5,9 +5,11 @@ from django.test.client import RequestFactory
 from strawberry_django_jwt.shortcuts import get_token
 
 from accounts.models import User, LastVerificationCode
-from .test_queries import set_response
-from .utils import temporary_image
+from .utils import temporary_image, set_response
 from .query_mutations import *
+
+
+factory = RequestFactory()
 
 
 def set_params(mutation, variables):
@@ -21,8 +23,6 @@ def test_login_mutation():
     user.save()
     variables = {"email": "test@test.com", "password": "qweqweqwe"}
     params = set_params(login_mutations, variables)
-
-    factory = RequestFactory()
 
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
@@ -44,8 +44,6 @@ def test_login_password_incorrect_error_mutation():
     variables = {"email": "test@test.com", "password": "error"}
     params = set_params(login_mutations, variables)
 
-    factory = RequestFactory()
-
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -64,7 +62,6 @@ def test_register_mutation():
         "password2": "qweqweqwe", "name": "test"
     }
     params = set_params(register_mutation, variables)
-    factory = RequestFactory()
 
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
@@ -85,7 +82,6 @@ def test_register_password_didnt_much_error_mutation():
         "password2": "qweqweqwe1", "name": "test"
     }
     params = set_params(register_mutation, variables)
-    factory = RequestFactory()
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -101,12 +97,11 @@ def test_register_password_didnt_much_error_mutation():
 def test_register_user_exist_error_mutation():
     User.objects.create(email="test@test.com")
     variables = {
-        "email": "test@test.com", "password1": "qweqweqwe",
-        "password2": "qweqweqwe", "name": "test"
+        "email": "test@test.com", "password1": "qweqweqwe1",
+        "password2": "qweqweqwe1", "name": "test"
     }
 
     params = set_params(register_mutation, variables)
-    factory = RequestFactory()
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -126,7 +121,6 @@ def test_register_user_password_length_error_mutation():
     }
 
     params = set_params(register_mutation, variables)
-    factory = RequestFactory()
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -144,7 +138,6 @@ def test_verify_token_mutation():
     token = get_token(user)
     variables = {"token": token}
     params = set_params(verifyTokenMutation, variables)
-    factory = RequestFactory()
 
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
@@ -162,12 +155,12 @@ def test_send_forgot_password_code_mutation():
     user = User.objects.create(email="test@test.com")
     variables = {"email": user.email}
     params = set_params(sendForgotPassword, variables)
-    factory = RequestFactory()
 
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
     data = json.loads(set_response(request).content.decode())
+
     assert not data.get("errors")
     assert data["data"]["sendForgotPassword"]["message"] == 'Code send successful'
 
@@ -179,11 +172,12 @@ def test_send_forgot_password_code_error_mutation():
     User.objects.create(email="test@test.com")
     variables = {"email": "error@email"}
     params = set_params(sendForgotPassword, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
     data = json.loads(set_response(request).content.decode())
+
     assert not data.get("errors")
     assert data["data"]["sendForgotPassword"]["message"] == 'User does not exists'
 
@@ -195,7 +189,7 @@ def test_verify_forgot_password_code_mutation():
     user = User.objects.create(email="test@test.com")
     variables = {"email": user.email}
     params = set_params(sendForgotPassword, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -205,7 +199,7 @@ def test_verify_forgot_password_code_mutation():
 
     variables = {"email": user.email, "code": code}
     params = set_params(VerifyForgotPassword, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -224,7 +218,7 @@ def test_change_password_mutation():
     user.save()
     variables = {"password1": 'changed', "password2": 'changed'}
     params = set_params(ChangePassword, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -244,7 +238,7 @@ def test_change_password_didnt_much_error_mutation():
     user.save()
     variables = {"password1": 'changed', "password2": 'error'}
     params = set_params(ChangePassword, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
@@ -265,7 +259,7 @@ def test_set_avatar_mutation():
     user = User.objects.create(email="test@test.com")
     variables = {"file": file}
     params = set_params(setAvatar, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type='application/json'
     )
@@ -285,12 +279,13 @@ def test_set_avatar_not_file_error_mutation():
 
     variables = {"file": ''}
     params = set_params(setAvatar, variables)
-    factory = RequestFactory()
+
     request = factory.post(
         "/graphql/", data=params, content_type="application/json"
     )
     request.user = user
     data = json.loads(set_response(request).content.decode())
+
     assert not data.get("errors")
     assert data["data"]["setAvatar"]["message"] == "Not file"
 

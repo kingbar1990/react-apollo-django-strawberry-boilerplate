@@ -25,6 +25,7 @@ django-extra-fields = "^3.0.2"
 psycopg2 = "^2.9.3"
 pytest-django = "^4.5.2"
 strawberry-graphql = "^0.133.2"
+pre-commit = "^2.20.0"
 
 
 [build-system]

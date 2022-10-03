@@ -6,13 +6,8 @@ from django.test.client import RequestFactory
 from strawberry_django_jwt.shortcuts import get_token
 
 from accounts.models import User
-from server.schema import schema
 from .query_queries import *
-from .test_views import GraphQLView
-
-
-def set_response(request):
-    return GraphQLView.as_view(schema=schema)(request)
+from .utils import set_response
 
 
 @pytest.mark.django_db

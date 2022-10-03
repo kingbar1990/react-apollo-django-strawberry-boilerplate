@@ -29,7 +29,7 @@ ForgotPasswordResult = strawberry.union("ForgotPasswordResult",
 VerifyForgotPasswordResult = strawberry.union("VerifyForgotPasswordResult",
                                               (VerifyForgotPasswordSuccessType, ErrorType))
 SetAvatarResult = strawberry.union("SetAvatarResult",
-                                   (SuccessType,ErrorType))
+                                   (SuccessType, ErrorType))
 
 
 @strawberry.type

@@ -7,11 +7,11 @@ from .test_views import GraphQLView
 from server.schema import schema
 
 
-def temporary_image() -> SimpleUploadedFile:
-    bts = BytesIO()
-    img = Image.new("RGB", (100, 100))
-    img.save(bts, 'jpeg')
-    return SimpleUploadedFile('test.jpg', bts.getvalue())
+    def temporary_image() -> SimpleUploadedFile:
+        bts = BytesIO()
+        img = Image.new("RGB", (100, 100))
+        img.save(bts, 'jpeg')
+        return SimpleUploadedFile('test.jpg', bts.getvalue())
 
 
 def set_response(request):

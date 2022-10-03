@@ -24,15 +24,13 @@
 
   - `docker-compose run server python manage.py createsuperuser`
 
-- ### Install dependencies
+- ### Run tests
 
-   - `Install Pipenv in your system - https://pypi.org/project/pipenv/`
+   - `docker-compose run server pytest`
 
-   - `cd server/`
+- ### Upgrade poetry libraries
 
-   - `pipenv shell`
-
-   - `pipenv install <dependency>`
+   - `docker-compose run poetry update`
 
 - ### Formatting python code
   - `docker-compose run server black server/`

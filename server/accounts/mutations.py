@@ -1,35 +1,34 @@
 import re
+
 import strawberry
-from strawberry.types import Info
-from strawberry.file_uploads import Upload
-
-from strawberry_django_jwt.shortcuts import (
-    get_token,
-    get_user_by_token
-)
-
 from django.core.exceptions import ObjectDoesNotExist
+from strawberry.file_uploads import Upload
+from strawberry.types import Info
+from strawberry_django_jwt.shortcuts import get_token
 
 from server.tasks import send_verification_code
+
+from .models import LastVerificationCode, User
 from .types import (
-    LoginSuccessType, RegisterSuccessType,
-    VerifyForgotPasswordSuccessType, ErrorType, SuccessType,
+    ErrorType,
+    LoginSuccessType,
+    RegisterSuccessType,
+    SuccessType,
+    VerifyForgotPasswordSuccessType,
 )
-from .models import User, LastVerificationCode
 
-
-LoginResult = strawberry.union("LoginResult",
-                               (LoginSuccessType, ErrorType))
-RegisterResult = strawberry.union("RegisterResult",
-                                  (RegisterSuccessType, ErrorType))
-ChangePasswordResult = strawberry.union("ChangePasswordResult",
-                                        (SuccessType, ErrorType))
-ForgotPasswordResult = strawberry.union("ForgotPasswordResult",
-                                        (SuccessType, ErrorType))
-VerifyForgotPasswordResult = strawberry.union("VerifyForgotPasswordResult",
-                                              (VerifyForgotPasswordSuccessType, ErrorType))
-SetAvatarResult = strawberry.union("SetAvatarResult",
-                                   (SuccessType, ErrorType))
+LoginResult = strawberry.union("LoginResult", (LoginSuccessType, ErrorType))
+RegisterResult = strawberry.union("RegisterResult", (RegisterSuccessType, ErrorType))
+ChangePasswordResult = strawberry.union(
+    "ChangePasswordResult", (SuccessType, ErrorType)
+)
+ForgotPasswordResult = strawberry.union(
+    "ForgotPasswordResult", (SuccessType, ErrorType)
+)
+VerifyForgotPasswordResult = strawberry.union(
+    "VerifyForgotPasswordResult", (VerifyForgotPasswordSuccessType, ErrorType)
+)
+SetAvatarResult = strawberry.union("SetAvatarResult", (SuccessType, ErrorType))
 
 
 @strawberry.type
@@ -40,10 +39,13 @@ class LoginMutation:
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
-            return ErrorType(message='User with specified email does not exists.')
+            return ErrorType(message="User with specified email does not exists.")
 
         if not user.check_password(password):
-            return ErrorType(message='User with specified email does not exists or password in incorrect.')
+            return ErrorType(
+                message="User with specified email"
+                " does not exists or password incorrect."
+            )
 
         token = get_token(user)
         # print(token, flush=True)
@@ -54,7 +56,9 @@ class LoginMutation:
 @strawberry.type
 class RegisterMutation:
     @strawberry.mutation
-    def register(self, email: str, password_1: str, password_2: str, name: str) -> RegisterResult:
+    def register(
+        self, email: str, password_1: str, password_2: str, name: str
+    ) -> RegisterResult:
         if not re.match("[^@]+@[^@]+.[^@]+", email):
             return ErrorType(message="Incorrect email.")
 
@@ -78,12 +82,14 @@ class RegisterMutation:
 @strawberry.type
 class ChangePasswordMutation:
     @strawberry.mutation
-    def change_password(self, info: Info, password_1: str, password_2: str) -> ChangePasswordResult:
+    def change_password(
+        self, info: Info, password_1: str, password_2: str
+    ) -> ChangePasswordResult:
         user = info.context.request.user
         if password_1 == password_2:
             user.set_password(password_1)
             user.save()
-            return SuccessType(message='Password changed success')
+            return SuccessType(message="Password changed success")
         else:
             return ErrorType(message="Passwords didn't match.")
 
@@ -96,7 +102,7 @@ class SendForgotPasswordMutation:
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
         else:
-            return ErrorType(message='User does not exists')
+            return ErrorType(message="User does not exists")
 
         code = send_verification_code(user.email)
         new_code, status = LastVerificationCode.objects.get_or_create(user=user)
@@ -105,41 +111,41 @@ class SendForgotPasswordMutation:
         if not status:
             new_code.code = code
         new_code.save()
-        return SuccessType(message='Code send successful')
+        return SuccessType(message="Code send successful")
 
 
 @strawberry.type
 class VerifyForgotPasswordMutation:
     @strawberry.mutation
-    def verify_forgot_password(self, email: str, code: str) -> VerifyForgotPasswordResult:
+    def verify_forgot_password(
+        self, email: str, code: str
+    ) -> VerifyForgotPasswordResult:
 
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
         else:
-            return ErrorType(message='User does not exists')
+            return ErrorType(message="User does not exists")
         if LastVerificationCode.objects.filter(user=user).exists():
             last_code = LastVerificationCode.objects.get(user=user)
         else:
-            return ErrorType(message='Code does not exists')
+            return ErrorType(message="Code does not exists")
         if code == last_code.code:
             if last_code.valid:
                 token = get_token(user)
                 return VerifyForgotPasswordSuccessType(token=token)
             else:
-                return ErrorType(message='Code time out')
+                return ErrorType(message="Code time out")
         else:
-            return ErrorType(message='Code does not match')
+            return ErrorType(message="Code does not match")
 
 
 @strawberry.type
 class SetAvatarMutation:
     @strawberry.mutation
     def set_avatar(self, info: Info, file: Upload) -> SetAvatarResult:
-        # if many files -> 'files: typing.List[Upload]'
         if not file:
-            return ErrorType(message='Not file')
+            return ErrorType(message="Not file")
         user = info.context.request.user
         user.avatar = file
         user.save()
-        # user.set_avatar(file)
-        return SuccessType(message='Avatar set successful')
+        return SuccessType(message="Avatar set successful")

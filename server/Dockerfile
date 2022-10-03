@@ -13,9 +13,9 @@ RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev
 
 # Pre commit install
-COPY .pre-commit-config.yaml .
-RUN git init . && pre-commit install-hooks
-RUN pre-commit install
+#COPY .pre-commit-config.yaml .
+#RUN git init . && pre-commit install-hooks
+#RUN pre-commit install
 
 ## -- Update system
 RUN apt-get update

@@ -1,6 +1,5 @@
-
-from pathlib import Path
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +26,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'strawberry_django_jwt.refresh_token',
-    'accounts'
+    "strawberry_django_jwt.refresh_token",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -44,12 +43,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "server.urls"
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'accounts', 'templates')
+TEMPLATES_DIR = os.path.join(BASE_DIR, "accounts", "templates")
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATES_DIR, ],
+        "DIRS": [
+            TEMPLATES_DIR,
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -119,8 +120,8 @@ AUTH_USER_MODEL = "accounts.User"
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 AUTHENTICATION_BACKENDS = [
-    'strawberry_django_jwt.backends.JSONWebTokenBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    "strawberry_django_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 STATIC_URL = "/staticfiles/"
@@ -140,16 +141,15 @@ PROD_SITE_URL = "http://localhost:8000/"
 
 
 SUPPORT_REDIRECT = {
-    'contact': PROD_SITE_URL+'/contact-us',
-    'cookie_policy': PROD_SITE_URL+'/cookie-policy',
-    'private_policy': PROD_SITE_URL+'/privacy-policy',
-    'terms': PROD_SITE_URL+'/terms-and-conditions',
-    'faq': PROD_SITE_URL+'/faq',
+    "contact": PROD_SITE_URL + "/contact-us",
+    "cookie_policy": PROD_SITE_URL + "/cookie-policy",
+    "private_policy": PROD_SITE_URL + "/privacy-policy",
+    "terms": PROD_SITE_URL + "/terms-and-conditions",
+    "faq": PROD_SITE_URL + "/faq",
 }
 
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", 'test@test.com')
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "test@test.com")
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 GRAPHQL_JWT = {"JWT_AUTHENTICATE_INTROSPECTION": False}
-

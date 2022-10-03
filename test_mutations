@@ -141,3 +141,6 @@ mutation ChangePassword{
     }
   }
  }
+
+
+# user.set_avatar(file)  if many files -> 'files: typing.List[Upload]'

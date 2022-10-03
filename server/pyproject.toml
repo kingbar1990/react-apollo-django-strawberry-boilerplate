@@ -25,9 +25,39 @@ django-extra-fields = "^3.0.2"
 psycopg2 = "^2.9.3"
 pytest-django = "^4.5.2"
 strawberry-graphql = "^0.133.2"
-pre-commit = "^2.20.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pylint.MESSAGE_CONTROL]
+disable = """
+    line-too-long,
+    abstract-method,
+    no-member,
+"""
+enable = "useless-suppression"
+
+[tool.pylint.REPORTS]
+reports="no"
+
+[tool.pylint.FORMAT]
+max-line-length="88"
+
+[tool.pylint.BASIC]
+good-names = "_,i,e,setUp,tearDown,maxDiff"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+default_section = "THIRDPARTY"
+known_first_party = []
+known_third_party = ["PIL", "accounts", "celery", "django", "pytest", "strawberry", "strawberry_django_jwt"]

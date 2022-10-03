@@ -1,4 +1,3 @@
-
 queryMe = """
         query me{
           me{

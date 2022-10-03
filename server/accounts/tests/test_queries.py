@@ -1,12 +1,11 @@
-
-import pytest
 import json
 
+import pytest
+from accounts.models import User
 from django.test.client import RequestFactory
 from strawberry_django_jwt.shortcuts import get_token
 
-from accounts.models import User
-from .query_queries import *
+from .query_queries import queryFindUser, queryMe
 from .utils import set_response
 
 
@@ -37,8 +36,10 @@ def test_query_me_with_token():
     factory = RequestFactory()
 
     request = factory.post(
-        "/graphql/", {"query": queryMe}, content_type="application/json",
-        HTTP_AUTHORIZATION=f'JWT {token}'
+        "/graphql/",
+        {"query": queryMe},
+        content_type="application/json",
+        HTTP_AUTHORIZATION=f"JWT {token}",
     )
 
     data = json.loads(set_response(request).content.decode())
@@ -59,7 +60,8 @@ def test_query_find_user():
     variables = {"email": user.email}
 
     request = factory.post(
-        "/graphql/", {"query": queryFindUser, "variables": variables},
+        "/graphql/",
+        {"query": queryFindUser, "variables": variables},
         content_type="application/json",
     )
 
@@ -82,12 +84,14 @@ def test_query_users():
     query = "{ users{email} }"
 
     request = factory.post(
-        "/graphql/", {"query": query}, content_type="application/json",
+        "/graphql/",
+        {"query": query},
+        content_type="application/json",
     )
     data = json.loads(set_response(request).content.decode())
 
     assert not data.get("errors")
-    assert type(data['data']['users']) == list
-    for user in data['data']['users']:
-        assert user['email'] in users_emails
+    assert type(data["data"]["users"]) == list
+    for user in data["data"]["users"]:
+        assert user["email"] in users_emails
     User.objects.all().delete()

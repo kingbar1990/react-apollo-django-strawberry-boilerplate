@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import strawberry
+
 from . import models
 
 
@@ -16,7 +17,7 @@ class UserType:
 
     @strawberry.field
     def avatar(self) -> str:
-        return self.avatar.file if self.avatar else ''
+        return self.avatar.file if self.avatar else ""
 
 
 @strawberry.type

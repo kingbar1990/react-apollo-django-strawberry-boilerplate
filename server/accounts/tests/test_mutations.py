@@ -8,8 +8,8 @@ from strawberry_django_jwt.shortcuts import get_token
 from .query_mutations import (
     ChangePassword,
     VerifyForgotPassword,
-    login_mutations,
-    register_mutation,
+    login,
+    register,
     sendForgotPassword,
     setAvatar,
     verifyTokenMutation,
@@ -29,7 +29,7 @@ def test_login_mutation():
     user.set_password("qweqweqwe")
     user.save()
     variables = {"email": "test@test.com", "password": "qweqweqwe"}
-    params = set_params(login_mutations, variables)
+    params = set_params(login, variables)
 
     request = factory.post("/graphql/", data=params, content_type="application/json")
     data = json.loads(set_response(request).content.decode())
@@ -47,7 +47,7 @@ def test_login_password_incorrect_error_mutation():
     user.set_password("qweqweqwe")
     user.save()
     variables = {"email": "test@test.com", "password": "error"}
-    params = set_params(login_mutations, variables)
+    params = set_params(login, variables)
 
     request = factory.post("/graphql/", data=params, content_type="application/json")
     data = json.loads(set_response(request).content.decode())
@@ -69,7 +69,7 @@ def test_register_mutation():
         "password2": "qweqweqwe",
         "name": "test",
     }
-    params = set_params(register_mutation, variables)
+    params = set_params(register, variables)
 
     request = factory.post("/graphql/", data=params, content_type="application/json")
     data = json.loads(set_response(request).content.decode())
@@ -89,7 +89,7 @@ def test_register_password_didnt_much_error_mutation():
         "password2": "qweqweqwe1",
         "name": "test",
     }
-    params = set_params(register_mutation, variables)
+    params = set_params(register, variables)
 
     request = factory.post("/graphql/", data=params, content_type="application/json")
     data = json.loads(set_response(request).content.decode())
@@ -109,7 +109,7 @@ def test_register_user_exist_error_mutation():
         "password2": "qweqweqwe1",
         "name": "test",
     }
-    params = set_params(register_mutation, variables)
+    params = set_params(register, variables)
 
     request = factory.post("/graphql/", data=params, content_type="application/json")
     data = json.loads(set_response(request).content.decode())
@@ -131,7 +131,7 @@ def test_register_user_password_length_error_mutation():
         "password2": "qw",
         "name": "test",
     }
-    params = set_params(register_mutation, variables)
+    params = set_params(register, variables)
 
     request = factory.post("/graphql/", data=params, content_type="application/json")
     data = json.loads(set_response(request).content.decode())

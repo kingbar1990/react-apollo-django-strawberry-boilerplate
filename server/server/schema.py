@@ -1,5 +1,7 @@
 import strawberry
 import strawberry_django_jwt.mutations as jwt_mutations
+from strawberry_django_jwt.middleware import JSONWebTokenMiddleware
+
 from accounts.mutations import (
     ChangePasswordMutation,
     LoginMutation,
@@ -9,7 +11,7 @@ from accounts.mutations import (
     VerifyForgotPasswordMutation,
 )
 from accounts.schema import Query as AccountQuery
-from strawberry_django_jwt.middleware import JSONWebTokenMiddleware
+from .subscriptions import Subscription
 
 
 @strawberry.type
@@ -33,5 +35,8 @@ class Mutation(
 
 
 schema = strawberry.Schema(
-    query=Query, mutation=Mutation, extensions=[JSONWebTokenMiddleware]
+    query=Query,
+    mutation=Mutation,
+    subscription=Subscription,
+    extensions=[JSONWebTokenMiddleware],
 )

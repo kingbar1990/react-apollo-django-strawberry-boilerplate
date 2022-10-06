@@ -1,4 +1,4 @@
-login_mutations = """
+login = """
                     mutation($email: String!,$password: String!){
                       login(email:$email, password:$password)
                       {
@@ -16,7 +16,7 @@ login_mutations = """
                 }
 """
 
-register_mutation = """
+register = """
                     mutation ($email: String!,$password1: String!,
                                 $password2: String!,$name: String!){
                       register(email: $email,password1: $password1,

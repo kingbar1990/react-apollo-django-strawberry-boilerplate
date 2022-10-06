@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "strawberry_django_jwt.refresh_token",
+    "channels",
     "accounts",
 ]
 
@@ -64,6 +65,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "server.wsgi.application"
+ASGI_APPLICATION = "server.asgi.application"
 
 
 # Database

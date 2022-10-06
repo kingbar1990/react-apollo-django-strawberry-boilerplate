@@ -24,8 +24,9 @@ django-extensions = "^3.2.1"
 django-extra-fields = "^3.0.2"
 psycopg2 = "^2.9.3"
 pytest-django = "^4.5.2"
-strawberry-graphql = "^0.133.2"
-
+strawberry-graphql = {extras = ["channels"], version = "^0.133.5"}
+channels = "^3.0.5"
+gunicorn = "^20.1.0"
 
 [build-system]
 requires = ["poetry-core"]

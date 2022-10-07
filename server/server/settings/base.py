@@ -141,6 +141,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 PROD_SITE_URL = "http://localhost:8000/"
 
+# Channel layer definitions
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 SUPPORT_REDIRECT = {
     "contact": PROD_SITE_URL + "/contact-us",

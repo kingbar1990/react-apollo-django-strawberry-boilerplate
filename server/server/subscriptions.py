@@ -7,7 +7,7 @@ import strawberry
 @strawberry.type
 class Subscription:
     @strawberry.subscription
-    async def count(self, target: int = 100) -> AsyncGenerator[int, None]:
-        for i in range(target):
+    async def count(self) -> AsyncGenerator[int, None]:
+        for i in range(11):
             yield i
             await asyncio.sleep(0.5)

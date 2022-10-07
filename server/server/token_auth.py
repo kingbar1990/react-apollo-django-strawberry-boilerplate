@@ -1,38 +1,61 @@
+import urllib.parse
+from typing import Optional
+
 from channels.auth import AuthMiddlewareStack
+from channels.db import database_sync_to_async
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ObjectDoesNotExist
 
-from strawberry_django_jwt.shortcuts import get_user_by_token
+from strawberry_django_jwt import utils
 
-import urllib.parse
+from accounts.models import User
+
+
+@database_sync_to_async
+def get_user(email: str) -> Optional[User]:
+    """
+    Get authenticated user or return anonymous user.
+    """
+    try:
+        user = User.objects.get(email=email)
+        return user
+    except ObjectDoesNotExist:
+        return AnonymousUser()
 
 
 class TokenAuthMiddleware:
-    def __init__(self, inner):
-        self.inner = inner
+    """
+    Custom middleware (insecure) that takes user IDs from the query string.
+    """
 
-    def __call__(self, scope):
-        return TokenAuthMiddlewareInstance(scope, self)
+    def __init__(self, app):
+        # Store the ASGI application we were passed
+        self.app = app
 
-
-class TokenAuthMiddlewareInstance:
-    def __init__(self, scope, middleware):
-        self.middleware = middleware
-        self.scope = dict(scope)
-        self.inner = self.middleware.inner
-
-    def __call__(self, receive, send):
-        decoded_qs = urllib.parse.parse_qs(self.scope["query_string"])
-        print(decoded_qs, flush=True)
-        if b"token" in decoded_qs:
-            token = decoded_qs.get(b"token").pop().decode()
-            print(token, flush=True)
-            self.scope["user"] = get_user_by_token(token)
-            print(get_user_by_token(token), flush=True)
+    async def __call__(self, scope, receive, send):
+        """
+        Look up token in headers and check authenticated user).
+        """
+        email = ""
+        decoded_qs = urllib.parse.parse_qs(scope["query_string"])
+        headers = dict(scope["headers"])
+        auth_headers_bytes = headers.get(b"authorization")
+        if auth_headers_bytes:
+            decode_auth = auth_headers_bytes.decode("utf-8")
+            if decode_auth and "JWT" in decode_auth:
+                token = decode_auth.split("JWT")[1].strip()
+                email = utils.jwt_decode(token).email
+        if not email:
+            if b"token" in decoded_qs:
+                token = decoded_qs.get(b"token").pop().decode()
+                email = utils.jwt_decode(token).email
+        if email:
+            scope["user"] = await get_user(email)
         else:
-            self.scope["user"] = AnonymousUser()
-        return self.inner(self.scope, receive, send)
+            scope["user"] = AnonymousUser()
+        return await self.app(scope, receive, send)
 
 
 def TokenAuthMiddlewareStack(inner):
-    TokenAuthMiddleware(AuthMiddlewareStack(inner))
+    return TokenAuthMiddleware(AuthMiddlewareStack(inner))

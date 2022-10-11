@@ -1,5 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+// import { ApolloProvider } from "react-apollo";
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+// import { client } from "./api/apollo/client";
+// import client from "./api/apollo/index";
 
 import { BrowserRouter } from "react-router-dom";
 
@@ -15,14 +19,21 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import appReducer from "./redusers/index.js";
 
+const client = new ApolloClient({
+  uri: 'http://localhost:8000/graphql/',
+  cache: new InMemoryCache(),
+});
+
 const store = createStore(appReducer);
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </BrowserRouter>,
+  <ApolloProvider client={client}>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  </ApolloProvider>,
   document.getElementById("root")
 );
 

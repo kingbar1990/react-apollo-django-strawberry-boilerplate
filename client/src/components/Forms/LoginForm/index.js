@@ -8,7 +8,7 @@ import { LoginSchema } from "./validation";
 export const LoginForm = ({ login }) => (
   <Formik
     initialValues={{
-      username: "",
+      email: "",
       password: ""
     }}
     validationSchema={LoginSchema}
@@ -20,7 +20,7 @@ export const LoginForm = ({ login }) => (
         <div className="card-body">
           <Form>
             <Field
-              name="username"
+              name="email"
               type="email"
               component={ReactstrapInput}
               label="Email"

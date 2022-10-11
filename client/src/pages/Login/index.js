@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import swal from "sweetalert";
 import { useMutation } from '@apollo/client';
 import { useHistory } from "react-router-dom";
@@ -13,15 +13,19 @@ import { client } from "../../api/apollo/client.js"
 
 const Login = props => {
   const history = useHistory();
-  const [mutateFunction, { data,  loading, error }] = useMutation(LOGIN);
+  const [mutateLogin, { data,  loading, error }] = useMutation(LOGIN);
+
+  const [errorMessage, setError] = useState(null)
 
   const onLoginMutation = () => {
-    if (data) {
+    if (data.login?.user?.id) {
       console.log(data)
       props.dispatch({ type: "SET_TOKEN", payload: data?.key });
       localStorage.setItem("token", data?.key);
       history.push("/dashboard");
-    } else if (error) {
+    } else if (data.login?.message) {
+      setError(data.login?.message)
+      console.log(error)
       // const errors = {};
       // const errorData = error.response.data;
       // for (const key in errorData) {
@@ -39,7 +43,7 @@ const Login = props => {
 
   const handleLogin = async values => {
     console.log("values",values)
-    mutateFunction({variables: {
+    mutateLogin({variables: {
       email: values.email,
       password: values.password,
     }})
@@ -73,9 +77,13 @@ const Login = props => {
       console.error(error);
     }
   };
+
   return (
     <Container>
-      <LoginForm login={handleLogin}></LoginForm>
+      <LoginForm 
+        login={handleLogin}
+        errorMessage={errorMessage}
+      />
     </Container>
   );
 };

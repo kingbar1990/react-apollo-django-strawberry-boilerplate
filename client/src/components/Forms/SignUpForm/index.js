@@ -45,7 +45,10 @@ export const SignUpForm = props => (
               component={ReactstrapInput}
               label="Password confirmation"
             />
-            <Button type="submit">Submit</Button>
+            <div className="d-flex align-items-center">
+              <Button type="submit">Submit</Button>
+              <p style={{color:'red'}} className="mb-0 ml-3">{props.errorMessage}</p>
+            </div>
           </Form>
         </div>
       </div>

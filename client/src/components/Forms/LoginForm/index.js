@@ -5,7 +5,7 @@ import { Button } from "reactstrap";
 import { ReactstrapInput } from "reactstrap-formik";
 import { LoginSchema } from "./validation";
 
-export const LoginForm = ({ login }) => (
+export const LoginForm = ({ login, errorMessage }) => (
   <Formik
     initialValues={{
       email: "",
@@ -31,7 +31,10 @@ export const LoginForm = ({ login }) => (
               component={ReactstrapInput}
               label="Password"
             />
-            <Button type="submit">Submit</Button>
+            <div className="d-flex align-items-center">
+              <Button type="submit">Submit</Button>
+              <p style={{color:'red'}} className="mb-0 ml-3">{errorMessage}</p>
+            </div>
           </Form>
         </div>
       </div>

@@ -1,8 +1,8 @@
 import React, {useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { verifyToken, getMe } from "../api/queries/index";
-import { VERIFY_TOKEN } from "../api/mutations/index";
+import { VERIFY_TOKEN, ME } from "../api/mutations/index";
 
 export const isAuth = WrappedComponent => {
   const Comp = (props) => {
@@ -12,6 +12,7 @@ export const isAuth = WrappedComponent => {
     });
 
     const [mutateVerifyToken, { data,  loading, error }] = useMutation(VERIFY_TOKEN);
+    const {data: userData} = useQuery(ME);
 
     useEffect(()=>{
       const onWrappLoaded = async () => {
@@ -19,19 +20,22 @@ export const isAuth = WrappedComponent => {
           mutateVerifyToken({variables: {
             token: localStorage.getItem('token')
           }});
-          const me = await getMe(localStorage.getItem('token'))
-  
-          setState({user: me.data} )
-  
-          if(!data.verified)  {
-            props.history.push("/login")
-          }
+
         } catch (error) {
           console.log("error", error);
         }
       }
       onWrappLoaded()
     },[])
+
+    useEffect(()=>{
+      if(userData) {
+        setState(userData)
+      }
+      if (data) {
+        !data.verifyToken?.payload?.exp && props.history.push("/login")
+      }
+    },[userData, data])
 
     return (
       <WrappedComponent {...props} user={state.user} />

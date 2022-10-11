@@ -53,4 +53,19 @@ mutation verifyToken($token: String!){
 }
 `;
 
+export const ME = gql`
+query me{
+  me{
+    ...on MeType{
+      user{
+        email
+      }
+    }
+    ...on ErrorType{
+      message
+    }
+  }
+}
+`;
+
 

@@ -38,3 +38,19 @@ $password2: String!, $name: String!){
 }
 }
 `;
+
+export const VERIFY_TOKEN = gql`
+mutation verifyToken($token: String!){
+  verifyToken(token: $token) {
+    ...on PayloadType{
+      payload{
+        exp
+        origIat
+        email
+      }
+    }
+  }
+}
+`;
+
+

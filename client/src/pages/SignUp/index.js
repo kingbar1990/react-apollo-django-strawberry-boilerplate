@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/client';
 
 import * as path from "../../constants/routes";
 import {Container} from "reactstrap";
+import { connect } from "react-redux";
 
 import {SignUpForm} from "../../components/Forms/SignUpForm/index";
 import swal from "sweetalert";
@@ -18,6 +19,8 @@ const SignUp = props => {
 
     const onLoginMutation = () => {
         if (data.register?.user?.id) {
+            props.dispatch({ type: "SET_TOKEN", payload: data.register?.token });
+            localStorage.setItem("token", data.register?.token);
             history.push(path.DASHBOARD);
         } else if (data.register?.message) {
             setError(data.register?.message)
@@ -84,4 +87,8 @@ const SignUp = props => {
     );
 };
 
-export default SignUp;
+const mapStateToProps = state => ({
+    data: state.user
+  });
+
+export default connect(mapStateToProps)(SignUp);

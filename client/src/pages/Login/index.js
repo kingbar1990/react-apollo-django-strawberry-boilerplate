@@ -7,9 +7,7 @@ import { connect } from "react-redux";
 import { Container } from "reactstrap";
 import { LoginForm } from "../../components/Forms/LoginForm/index";
 
-// import { login } from "../../api/queries/index";
 import { LOGIN } from "../../api/mutations/index";
-import { client } from "../../api/apollo/client.js"
 
 const Login = props => {
   const history = useHistory();
@@ -20,8 +18,8 @@ const Login = props => {
   const onLoginMutation = () => {
     if (data.login?.user?.id) {
       console.log(data)
-      props.dispatch({ type: "SET_TOKEN", payload: data?.key });
-      localStorage.setItem("token", data?.key);
+      props.dispatch({ type: "SET_TOKEN", payload: data.login?.token });
+      localStorage.setItem("token", data.login?.token);
       history.push("/dashboard");
     } else if (data.login?.message) {
       setError(data.login?.message)

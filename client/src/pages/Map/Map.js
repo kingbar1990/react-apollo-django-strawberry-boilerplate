@@ -8,8 +8,6 @@ import geojson3 from "../../assets/Detail_Level_02_Communes_EPSG32629.json";
 import geojson4 from "../../assets/Detail_Level_02_Communes_WGS84.json";
 import geojson5 from "../../assets/Detail_Level_03_FarmLeaders_Farms_Fields_WGS84.json";
 
-import "./styles.scss";
-
 const MapBox = () => {
 
     // const [coordinates, setCoordinates] = useState([]);
@@ -72,7 +70,7 @@ const MapBox = () => {
 
     return(
         <div id="map">
-            <MapContainer center={[51.505, -0.09]} zoom={5} scrollWheelZoom={true}>
+            <MapContainer center={[32.333, -6.384]} zoom={5} scrollWheelZoom={true}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -3,6 +3,17 @@
 #map { 
     height: 100vh; 
     .leaflet-container {
-        height: calc(100vh - 64px);
+        height: 100vh;
+        .leaflet-top {
+            top: 80px;
+        }
+    }
+}
+
+.map-wrapp {
+    .navbar {
+        position: fixed;
+        width:100%;
+        z-index: 1000;
     }
 }

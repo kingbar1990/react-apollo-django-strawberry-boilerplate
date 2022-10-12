@@ -20,7 +20,7 @@ const Login = props => {
       console.log(data)
       props.dispatch({ type: "SET_TOKEN", payload: data.login?.token });
       localStorage.setItem("token", data.login?.token);
-      history.push("/dashboard");
+      history.push("/map");
     } else if (data.login?.message) {
       setError(data.login?.message)
       console.log(error)

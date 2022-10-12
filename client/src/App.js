@@ -12,6 +12,8 @@ import Home from "./pages/Home/index";
 import Login from "./pages/Login/index";
 import SignUp from "./pages/SignUp/index";
 import PageNotFound from "./components/PageNotFound";
+import Map from "./pages/Map/Map";
+import MapWrapp from "./pages/Map"
 
 import "./App.css";
 
@@ -28,7 +30,11 @@ class App extends Component {
         <Route exact path={path.HOME} render={() => <Home/>}/>
         <Route exact path={path.SIGN_IN} render={() => <Login />} />
         <Route exact path={path.SIGN_UP} render={() => <SignUp />} />
-        <Main {...this.props}>
+        <Suspense fallback={<Loader />}>
+          <Route exact path={path.MAP} render={() => <MapWrapp />} />
+        </Suspense>
+        <Route render={props => <PageNotFound {...props} />} />
+        {/* <Main {...this.props}>
           <Suspense fallback={<Loader />}>
             <Switch>
               <Route
@@ -59,7 +65,7 @@ class App extends Component {
               <Route render={props => <PageNotFound {...props} />} />
             </Switch>
           </Suspense>
-        </Main>
+        </Main> */}
       </Switch>
     );
   }

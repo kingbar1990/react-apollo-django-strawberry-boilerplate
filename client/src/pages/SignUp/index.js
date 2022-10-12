@@ -21,7 +21,7 @@ const SignUp = props => {
         if (data.register?.user?.id) {
             props.dispatch({ type: "SET_TOKEN", payload: data.register?.token });
             localStorage.setItem("token", data.register?.token);
-            history.push(path.DASHBOARD);
+            history.push(path.MAP);
         } else if (data.register?.message) {
             setError(data.register?.message)
           // const errors = {};

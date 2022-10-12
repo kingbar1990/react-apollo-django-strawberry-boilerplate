@@ -14,7 +14,7 @@ const Home = () => (
       <Link to={path.SIGN_UP}>signup</Link>
     </p>
     <p>
-      <Link to={path.DASHBOARD}>dashboard</Link>
+      <Link to={path.MAP}>main map</Link>
     </p>
   </div>
 );

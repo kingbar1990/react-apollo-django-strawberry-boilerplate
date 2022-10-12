@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { useMutation, useQuery } from '@apollo/client';
 import { verifyToken, getMe } from "../api/queries/index";
@@ -9,20 +9,25 @@ export const isAuth = WrappedComponent => {
   const Comp = (props) => {
 
     const history = useHistory();
+    const location = useLocation();
 
     const [state, setState] = useState({
       user: null
     });
 
     const [mutateVerifyToken, { data,  loading, error }] = useMutation(VERIFY_TOKEN);
-    const {data: userData} = useQuery(ME);
+    const {loading: dataLoading, data: userData, } = useQuery(ME);
 
     useEffect(()=>{
       const onWrappLoaded = async () => {
         try {
-          mutateVerifyToken({variables: {
-            token: localStorage.getItem('token') || '',
-          }});
+          if (localStorage.getItem('token')) {
+            mutateVerifyToken({variables: {
+              token: localStorage.getItem('token'),
+            }});
+          } else {
+            history.push("/login")
+          }
 
         } catch (error) {
           console.log("error", error);
@@ -32,14 +37,14 @@ export const isAuth = WrappedComponent => {
     },[])
 
     useEffect(()=>{
-      
+      console.log('locationPathname',location.pathname)
       if(userData) {
         setState(userData)
       }
       if (error?.message) {
-        error?.message && history.push("/login")
+        history.push("/login")
       }
-    },[userData, error])
+    },[userData, error, dataLoading])
 
     return (
       <WrappedComponent {...props} user={state.user} />

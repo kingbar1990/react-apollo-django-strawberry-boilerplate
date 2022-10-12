@@ -40,39 +40,41 @@ export default class NavBar extends Component {
   };
 
   handleLogout = () => {
-    logout()
-      .then(response => {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    // logout()
+    //   .then(response => {
+    //     localStorage.removeItem("token");
+    //     window.location.href = "/login";
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
+    localStorage.removeItem("token");
+    // window.location.href = "/login";
   };
 
   render() {
     return (
       <Navbar className="flexible-navbar" light expand="md" scrolling>
-        <NavbarBrand href="/">Landing</NavbarBrand>
+        <NavbarBrand href="/">Homepage</NavbarBrand>
         <MDBNavbarToggler onClick={this.toggleCollapse("navbarCollapse13")} />
         <MDBCollapse
           id="navbarCollapse13"
           isOpen={this.state.collapseID}
           navbar
         >
-          <MDBNavbarNav left>
+          <MDBNavbarNav right>
             <MDBNavItem>
-              <MDBNavLink to={DASHBOARD}>Home</MDBNavLink>
+              <MDBNavLink onClick={this.handleLogout} to={'/'}>Logout</MDBNavLink>
             </MDBNavItem>
-            <MDBNavItem>
+            {/* <MDBNavItem>
               <MDBNavLink to={PROFILE}>Profile</MDBNavLink>
             </MDBNavItem>
             <MDBNavItem>
               <MDBNavLink to={TASKS}>Tasks</MDBNavLink>
-            </MDBNavItem>
+            </MDBNavItem> */}
           </MDBNavbarNav>
         </MDBCollapse>
-        <Collapse navbar>
+        {/* <Collapse navbar>
           <MDBNavbarNav right>
             <MDBNavItem>
               <a
@@ -121,7 +123,7 @@ export default class NavBar extends Component {
               </div>
             </MDBNavItem>
           </MDBNavbarNav>
-        </Collapse>
+        </Collapse> */}
       </Navbar>
     );
   }

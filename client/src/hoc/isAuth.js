@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { useMutation, useQuery } from '@apollo/client';
 import { verifyToken, getMe } from "../api/queries/index";
@@ -9,7 +9,6 @@ export const isAuth = WrappedComponent => {
   const Comp = (props) => {
 
     const history = useHistory();
-    const location = useLocation();
 
     const [state, setState] = useState({
       user: null
@@ -37,14 +36,13 @@ export const isAuth = WrappedComponent => {
     },[])
 
     useEffect(()=>{
-      console.log('locationPathname',location.pathname)
       if(userData) {
         setState(userData)
       }
       if (error?.message) {
         history.push("/login")
       }
-    },[userData, error, dataLoading])
+    },[userData, error])
 
     return (
       <WrappedComponent {...props} user={state.user} />

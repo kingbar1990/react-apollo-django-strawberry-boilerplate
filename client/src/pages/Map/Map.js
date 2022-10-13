@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 
+import MapContent from "./MapContent";
+
 import geojson from "../../assets/Detail_Level_01_Regions_EPSG32629.json"
 import geojson2 from "../../assets/Detail_Level_01_Regions_WGS84.json";
 import geojson3 from "../../assets/Detail_Level_02_Communes_EPSG32629.json";
@@ -75,17 +77,12 @@ const MapBox = () => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {/* <Marker position={[51.505, -0.09]}>
-                    <Popup>
-                    A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup>
-                </Marker> */}
-                {/* <Polygon positions={coordinates} /> */}
-                    <GeoJSON key='geojson' data={geojson} style={setColor} />
+                    <MapContent />
+                    {/* <GeoJSON key='geojson' data={geojson} style={setColor} />
                     <GeoJSON key='geojson2' data={geojson2} style={setColor2} />     
                     <GeoJSON key='geojson3' data={geojson3} style={setColor3} />   
                     <GeoJSON key='geojson4' data={geojson4} style={setColor4} />   
-                    <GeoJSON key='geojson5' data={geojson5} style={setColor5} />   
+                    <GeoJSON key='geojson5' data={geojson5} style={setColor5} />    */}
             </MapContainer>
         </div>
     )

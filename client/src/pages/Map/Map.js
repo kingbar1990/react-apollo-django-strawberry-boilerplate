@@ -10,7 +10,7 @@ import geojson3 from "../../assets/Detail_Level_02_Communes_EPSG32629.json";
 import geojson4 from "../../assets/Detail_Level_02_Communes_WGS84.json";
 import geojson5 from "../../assets/Detail_Level_03_FarmLeaders_Farms_Fields_WGS84.json";
 
-const MapBox = () => {
+const MapBox = props => {
 
     // const [coordinates, setCoordinates] = useState([]);
 
@@ -77,7 +77,7 @@ const MapBox = () => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                    <MapContent />
+                    <MapContent zoomState={props.zoomState} setZoomState={props.setZoomState}/>
                     {/* <GeoJSON key='geojson' data={geojson} style={setColor} />
                     <GeoJSON key='geojson2' data={geojson2} style={setColor2} />     
                     <GeoJSON key='geojson3' data={geojson3} style={setColor3} />   

@@ -17,6 +17,7 @@ import { DASHBOARD, PROFILE, TASKS } from "../../constants/routes";
 import { logout } from "../../api/queries/index";
 
 export default class NavBar extends Component {
+
   state = {
     open: false,
     collapseID: ""
@@ -124,6 +125,17 @@ export default class NavBar extends Component {
             </MDBNavItem>
           </MDBNavbarNav>
         </Collapse> */}
+        {this.props.zoomState.type === "provinces" &&
+          <div 
+            className="main-view-button"
+            onClick={()=> this.props.setZoomState({
+              ...this.props.zoomState,
+              type: "regions",
+          })}
+          >
+            <p>Main view</p>
+          </div>
+        }
       </Navbar>
     );
   }

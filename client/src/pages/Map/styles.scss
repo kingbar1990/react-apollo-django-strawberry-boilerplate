@@ -15,5 +15,24 @@
         position: fixed;
         width:100%;
         z-index: 1000;
+        .main-view-button {
+            width: 100px;
+            background: rgb(68, 0, 255);
+            border-radius: 5px;
+            color: white;
+            position:absolute;
+            height: 30px;
+            right: 10vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            p {
+                margin: auto 0;
+            }
+            &:hover {
+                background: rgba(0, 0, 255, 0.671);
+            }
+        }
     }
 }

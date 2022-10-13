@@ -10,15 +10,12 @@ import geojson3 from "../../assets/Detail_Level_02_Communes_EPSG32629.json";
 import geojson4 from "../../assets/Detail_Level_02_Communes_WGS84.json";
 import geojson5 from "../../assets/Detail_Level_03_FarmLeaders_Farms_Fields_WGS84.json";
 
-const MapContent = () => {
+const MapContent = props => {
     const geoJsonRegions = useRef(null);
     const geoJsonProvinces = useRef(null);
+    const geoJsonFarms = useRef(null)
     const map = useMap();
 
-    const [zoomState, setZoomState] = useState({
-        type: "regions",
-        code: null
-    })
     const [getRegionsWithCodes, setRegions] = useState([])
     const [zoomedRegion, setZoomedRegion] = useState(null)
 
@@ -35,11 +32,11 @@ const MapContent = () => {
 
     useEffect(() => {
         let getZoomedRegion = null;
-        if(zoomState.code && (getRegionsWithCodes.length > 0)) {
-            getZoomedRegion = getRegionsWithCodes.find(r => r.regionCode === zoomState.code)
+        if(props.zoomState.code && (getRegionsWithCodes.length > 0)) {
+            getZoomedRegion = getRegionsWithCodes.find(r => r.regionCode === props.zoomState.code)
         }
         getZoomedRegion && setZoomedRegion(getZoomedRegion.region)
-    },[zoomState.code])
+    },[props.zoomState.code])
   
     const highlightFeature = (e, type) => {
       const layer = e.target;
@@ -70,23 +67,29 @@ const MapContent = () => {
   
     const zoomToFeature = (e, type) => {
         map.fitBounds(e.target.getBounds());
-        setZoomState({
+        props.setZoomState({
             type: 'provinces',
             code: null,
         })
         setTimeout(()=>{
             if (type === 'regions') {
-                setZoomState({
+                props.setZoomState({
                     type: 'provinces',
                     code: e.target.feature.properties.Code_Region,
                 })
             }
         }, 300)
     };
+
+    useEffect(()=>{
+        if (props.zoomState.code && props.zoomState.type === "regions" ) {
+            map.fitBounds(geoJsonRegions.current.getBounds())
+        }
+    },[props.zoomState.type])
   
     return (
         <>
-            {zoomState.type === "regions" &&
+            {props.zoomState.type === "regions" &&
                 <GeoJSON
                     data={geojson2}
                     key='regions'
@@ -116,35 +119,67 @@ const MapContent = () => {
                     }}
                 />
             }
-              {(zoomedRegion && zoomState.type === "provinces") &&
-                <GeoJSON
-                    data={zoomedRegion}
-                    key='provinces'
-                    ref={geoJsonProvinces}
-                    style={() => {
-                        return {
-                        color: '#c7c115',
-                        // dashArray: '3',
-                        fillColor: '#c7c115',
-                        fillOpacity: 0.2,
-                        opacity: 1,
-                        weight: 2,
-                        };
-                    }}
-                    onEachFeature={(__, layer) => {
-                        layer.on({
-                        click: (e) => {
-                            zoomToFeature(e, 'regions');
-                        },
-                        mouseout: (e) => {
-                            resetHighlight(e, 'provinces');
-                        },
-                        mouseover: (e) => {
-                            highlightFeature(e, 'provinces');
-                        },
-                        });
-                    }}
-                />
+              {(zoomedRegion && props.zoomState.type === "provinces") &&
+                <>
+                    <GeoJSON
+                        data={zoomedRegion}
+                        key='provinces'
+                        ref={geoJsonProvinces}
+                        style={() => {
+                            return {
+                            color: '#c7c115',
+                            // dashArray: '3',
+                            fillColor: '#c7c115',
+                            fillOpacity: 0.2,
+                            opacity: 1,
+                            weight: 2,
+                            };
+                        }}
+                        onEachFeature={(__, layer) => {
+                            layer.on({
+                            click: (e) => {
+                                zoomToFeature(e, 'regions');
+                            },
+                            mouseout: (e) => {
+                                resetHighlight(e, 'provinces');
+                            },
+                            mouseover: (e) => {
+                                highlightFeature(e, 'provinces');
+                            },
+                            });
+                        }}
+                    />
+                    <GeoJSON
+                        data={geojson5}
+                        key='farms'
+                        ref={geoJsonFarms}
+                        style={() => {
+                            return {
+                            color: 'red',
+                            // dashArray: '3',
+                            fillColor: 'red',
+                            fillOpacity: 0.2,
+                            opacity: 1,
+                            weight: 2,
+                            };
+                        }}
+                        // onEachFeature={(__, layer) => {
+                        //     layer.on({
+                        //     click: (e) => {
+                        //         zoomToFeature(e, 'regions');
+                        //     },
+                        //     mouseout: (e) => {
+                        //         resetHighlight(e, 'provinces');
+                        //     },
+                        //     mouseover: (e) => {
+                        //         highlightFeature(e, 'provinces');
+                        //     },
+                        //     });
+                        // }}
+                    />
+                </>
+                
+                
               }
         </>
     );
